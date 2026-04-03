@@ -3,7 +3,7 @@ import type { Config, Context } from "@netlify/functions";
 
 fal.config({ credentials: () => process.env.FAL_KEY || "" });
 
-const MODEL_ID = "fal-ai/ip-adapter-face-id";
+const MODEL_ID = "fal-ai/flux-general";
 
 interface FalImage {
   url: string;

@@ -3,7 +3,7 @@ import type { Config, Context } from "@netlify/functions";
 
 fal.config({ credentials: () => process.env.FAL_KEY || "" });
 
-const MODEL_ID = "fal-ai/ip-adapter-face-id";
+const MODEL_ID = "fal-ai/flux-general";
 
 export default async (req: Request, _context: Context) => {
   if (req.method === "OPTIONS") {
@@ -40,21 +40,20 @@ export default async (req: Request, _context: Context) => {
     // Upload to fal.storage
     const imageUrl = await fal.storage.upload(blob);
 
-    // Submit 4 parallel queue jobs using IP-Adapter Face ID (SDXL)
+    // Submit 4 parallel queue jobs using FLUX.1 [dev] with face reference
     const submissions = await Promise.allSettled(
       Array.from({ length: 4 }, () =>
         fal.queue.submit(MODEL_ID, {
           input: {
-            face_image_url: imageUrl,
             prompt,
-            model_type: "SDXL-v2-plus",
-            negative_prompt:
-              "blurry, low resolution, bad, ugly, low quality, pixelated, deformed, disfigured",
-            width: 768,
-            height: 1024,
-            guidance_scale: 7.5,
-            num_inference_steps: 50,
-            num_samples: 1,
+            reference_image_url: imageUrl,
+            reference_strength: 0.85,
+            image_size: "portrait_4_3",
+            num_images: 1,
+            num_inference_steps: 28,
+            guidance_scale: 3.5,
+            enable_safety_checker: false,
+            output_format: "png",
           },
         })
       )

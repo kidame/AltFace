@@ -118,24 +118,27 @@ Pay-as-you-go fal.ai : **~0.05$ par image**, soit **~0.20$ pour 4 images** par g
 
 ## Modele IA
 
-- **Modele** : `fal-ai/ip-adapter-face-id` (IP-Adapter Face ID, SDXL)
-- **Variante** : `SDXL-v2-plus` avec base `RealVisXL_V3.0` (photoréalisme haute qualité)
-- **Face lock** : `face_image_url` pour verrouiller le visage (auto-resize 640x640)
-- **NSFW** : aucun safety checker (ni paramètre ni filtre serveur)
-- **Qualité** : 768x1024, 50 steps, guidance 7.5
-- **Cout** : $0/compute-second (gratuit)
+- **Modele** : `fal-ai/flux-general` (FLUX.1 [dev] - 12B parametres)
+- **Face lock** : `reference_image_url` + `reference_strength: 0.85`
+- **NSFW** : `enable_safety_checker: false`
+- **Qualité** : portrait 4:3, 28 steps, guidance 3.5, output PNG
 - **Queue** : `fal.queue.submit()` + `fal.queue.status()` + `fal.queue.result()`
 
 ## Changelog
 
+### v1.3.0 - 2026-04-03
+- Switch vers `fal-ai/flux-general` (FLUX.1 [dev])
+- Raison : qualité d'image nettement superieure (12B params, architecture Flow Transformer)
+- Face lock via `reference_image_url` avec `reference_strength: 0.85`
+- `enable_safety_checker: false` pour le NSFW
+- Format portrait 4:3, 28 inference steps, PNG
+
 ### v1.2.0 - 2026-04-03
-- Switch de `fal-ai/pulid` vers `fal-ai/ip-adapter-face-id` (SDXL-v2-plus)
-- Raison : meilleure qualité d'image (SDXL + RealVisXL), aucun filtre NSFW
-- Face lock via `face_image_url`, resolution 768x1024, 50 inference steps
-- Gratuit ($0/compute-second)
+- Switch vers `fal-ai/ip-adapter-face-id` (SDXL-v2-plus)
+- Qualite insuffisante pour l'usage voulu
 
 ### v1.1.0 - 2026-04-03
-- Switch de `fal-ai/flux-2-flex/edit` vers `fal-ai/pulid`
+- Switch vers `fal-ai/pulid` (bloquait les prompts NSFW)
 - Raison : flux-2-flex bloquait les prompts NSFW cote serveur
 
 ### v1.0.0 - 2026-04-03
