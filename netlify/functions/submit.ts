@@ -45,7 +45,7 @@ export default async (req: Request, _context: Context) => {
       Array.from({ length: 4 }, () =>
         fal.queue.submit(MODEL_ID, {
           input: {
-            image_url: imageUrl,
+            image_urls: [imageUrl],
             prompt,
             enable_safety_checker: false,
           },
