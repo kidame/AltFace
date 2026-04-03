@@ -1,10 +1,15 @@
 import { fal } from "@fal-ai/client";
+import type { Config, Context } from "@netlify/functions";
 
 fal.config({ credentials: () => process.env.FAL_KEY || "" });
 
 const MODEL_ID = "fal-ai/flux-2-flex/edit";
 
-export default async (req: Request) => {
+export default async (req: Request, _context: Context) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204 });
+  }
+
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
@@ -74,4 +79,9 @@ export default async (req: Request) => {
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
+};
+
+export const config: Config = {
+  path: "/api/submit",
+  method: ["POST", "OPTIONS"],
 };
