@@ -118,19 +118,25 @@ Pay-as-you-go fal.ai : **~0.05$ par image**, soit **~0.20$ pour 4 images** par g
 
 ## Modele IA
 
-- **Modele** : `fal-ai/pulid` (PuLID - Pure and Lightning ID customization)
-- **Face lock** : l'image uploadee est passee via `reference_images` pour une consistance maximale du visage
-- **Parametres** : `id_scale: 0.8`, `mode: "fidelity"`, `guidance_scale: 1.2`
-- **NSFW** : pas de safety checker cote serveur (aucun filtre de contenu)
-- **Queue** : utilisation de `fal.queue.submit()` + `fal.queue.status()` + `fal.queue.result()`
+- **Modele** : `fal-ai/ip-adapter-face-id` (IP-Adapter Face ID, SDXL)
+- **Variante** : `SDXL-v2-plus` avec base `RealVisXL_V3.0` (photoréalisme haute qualité)
+- **Face lock** : `face_image_url` pour verrouiller le visage (auto-resize 640x640)
+- **NSFW** : aucun safety checker (ni paramètre ni filtre serveur)
+- **Qualité** : 768x1024, 50 steps, guidance 7.5
+- **Cout** : $0/compute-second (gratuit)
+- **Queue** : `fal.queue.submit()` + `fal.queue.status()` + `fal.queue.result()`
 
 ## Changelog
 
+### v1.2.0 - 2026-04-03
+- Switch de `fal-ai/pulid` vers `fal-ai/ip-adapter-face-id` (SDXL-v2-plus)
+- Raison : meilleure qualité d'image (SDXL + RealVisXL), aucun filtre NSFW
+- Face lock via `face_image_url`, resolution 768x1024, 50 inference steps
+- Gratuit ($0/compute-second)
+
 ### v1.1.0 - 2026-04-03
-- Switch du modele `fal-ai/flux-2-flex/edit` vers `fal-ai/pulid`
-- Raison : flux-2-flex bloquait les prompts NSFW cote serveur malgre `enable_safety_checker: false`
-- PuLID n'a pas de filtre de contenu et est specialise dans la face consistency
-- Parametres optimises : `reference_images`, `id_scale: 0.8`, `mode: "fidelity"`
+- Switch de `fal-ai/flux-2-flex/edit` vers `fal-ai/pulid`
+- Raison : flux-2-flex bloquait les prompts NSFW cote serveur
 
 ### v1.0.0 - 2026-04-03
 - Initial release

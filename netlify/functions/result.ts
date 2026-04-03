@@ -3,7 +3,7 @@ import type { Config, Context } from "@netlify/functions";
 
 fal.config({ credentials: () => process.env.FAL_KEY || "" });
 
-const MODEL_ID = "fal-ai/pulid";
+const MODEL_ID = "fal-ai/ip-adapter-face-id";
 
 interface FalImage {
   url: string;
@@ -47,7 +47,9 @@ export default async (req: Request, _context: Context) => {
       const result = await fal.queue.result<FalResult>(MODEL_ID, {
         requestId,
       });
-      const imageUrl = result.data?.images?.[0]?.url;
+      const data = result.data as Record<string, unknown>;
+      const images = (data?.images ?? data?.output) as FalImage[] | undefined;
+      const imageUrl = images?.[0]?.url;
 
       return new Response(
         JSON.stringify({ status: "completed", image: imageUrl }),

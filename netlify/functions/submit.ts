@@ -3,7 +3,7 @@ import type { Config, Context } from "@netlify/functions";
 
 fal.config({ credentials: () => process.env.FAL_KEY || "" });
 
-const MODEL_ID = "fal-ai/pulid";
+const MODEL_ID = "fal-ai/ip-adapter-face-id";
 
 export default async (req: Request, _context: Context) => {
   if (req.method === "OPTIONS") {
@@ -40,18 +40,21 @@ export default async (req: Request, _context: Context) => {
     // Upload to fal.storage
     const imageUrl = await fal.storage.upload(blob);
 
-    // Submit 4 parallel queue jobs using PuLID for face consistency
+    // Submit 4 parallel queue jobs using IP-Adapter Face ID (SDXL)
     const submissions = await Promise.allSettled(
       Array.from({ length: 4 }, () =>
         fal.queue.submit(MODEL_ID, {
           input: {
-            reference_images: [{ image_url: imageUrl }],
+            face_image_url: imageUrl,
             prompt,
-            num_images: 1,
-            id_scale: 0.8,
-            mode: "fidelity",
-            guidance_scale: 1.2,
-            num_inference_steps: 4,
+            model_type: "SDXL-v2-plus",
+            negative_prompt:
+              "blurry, low resolution, bad, ugly, low quality, pixelated, deformed, disfigured",
+            width: 768,
+            height: 1024,
+            guidance_scale: 7.5,
+            num_inference_steps: 50,
+            num_samples: 1,
           },
         })
       )
