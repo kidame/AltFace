@@ -118,18 +118,25 @@ Pay-as-you-go fal.ai : **~0.05$ par image**, soit **~0.20$ pour 4 images** par g
 
 ## Modele IA
 
-- **Modele** : `fal-ai/flux-2-flex/edit`
-- **Face lock** : l'image uploadee est passee via `image_url` + referencee dans le prompt
-- **Safety checker** : desactive (`enable_safety_checker: false`)
+- **Modele** : `fal-ai/pulid` (PuLID - Pure and Lightning ID customization)
+- **Face lock** : l'image uploadee est passee via `reference_images` pour une consistance maximale du visage
+- **Parametres** : `id_scale: 0.8`, `mode: "fidelity"`, `guidance_scale: 1.2`
+- **NSFW** : pas de safety checker cote serveur (aucun filtre de contenu)
 - **Queue** : utilisation de `fal.queue.submit()` + `fal.queue.status()` + `fal.queue.result()`
 
 ## Changelog
+
+### v1.1.0 - 2026-04-03
+- Switch du modele `fal-ai/flux-2-flex/edit` vers `fal-ai/pulid`
+- Raison : flux-2-flex bloquait les prompts NSFW cote serveur malgre `enable_safety_checker: false`
+- PuLID n'a pas de filtre de contenu et est specialise dans la face consistency
+- Parametres optimises : `reference_images`, `id_scale: 0.8`, `mode: "fidelity"`
 
 ### v1.0.0 - 2026-04-03
 - Initial release
 - Upload photo avec drag & drop + compression client
 - Prompt NSFW avec suggestions rapides
-- Generation 4 images paralleles via fal.ai flux-2-flex/edit
+- Generation 4 images paralleles via fal.ai
 - Architecture queue/polling (submit + result) pour eviter les timeouts
 - Grille 2x2 avec chargement progressif
 - Lightbox fullscreen + telechargement

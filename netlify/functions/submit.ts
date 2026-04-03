@@ -3,7 +3,7 @@ import type { Config, Context } from "@netlify/functions";
 
 fal.config({ credentials: () => process.env.FAL_KEY || "" });
 
-const MODEL_ID = "fal-ai/flux-2-flex/edit";
+const MODEL_ID = "fal-ai/pulid";
 
 export default async (req: Request, _context: Context) => {
   if (req.method === "OPTIONS") {
@@ -40,14 +40,18 @@ export default async (req: Request, _context: Context) => {
     // Upload to fal.storage
     const imageUrl = await fal.storage.upload(blob);
 
-    // Submit 4 parallel queue jobs
+    // Submit 4 parallel queue jobs using PuLID for face consistency
     const submissions = await Promise.allSettled(
       Array.from({ length: 4 }, () =>
         fal.queue.submit(MODEL_ID, {
           input: {
-            image_urls: [imageUrl],
+            reference_images: [{ image_url: imageUrl }],
             prompt,
-            enable_safety_checker: false,
+            num_images: 1,
+            id_scale: 0.8,
+            mode: "fidelity",
+            guidance_scale: 1.2,
+            num_inference_steps: 4,
           },
         })
       )
